@@ -1,0 +1,23 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app/
+
+    # Level 9 is the highest level
+    level: 1
+
+#    ignoreErrors:
+#        - '#PHPDoc tag @var#'
+#
+    excludePaths:
+        - ./app/Listeners/Auth/CheckLocked.php
+        - ./app/Listeners/Auth/FailedVerifyEmail.php
+        - ./app/Listeners/Auth/LoginSuccess.php
+        - ./app/Listeners/Auth/ReleaseLock.php
+        - ./app/Listeners/Auth/ValidateFailedAttempt.php
+        - ./app/Listeners/Auth/ValidateUserActive.php
+#
+#    checkMissingIterableValueType: false

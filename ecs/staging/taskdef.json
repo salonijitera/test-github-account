@@ -1,0 +1,73 @@
+{
+    "family": "laravel",
+    "networkMode": "awsvpc",
+    "taskRoleArn": "arn:aws:iam::<<PLACEHOLDER>>:role/ecs_tasks_base_source_staging",
+    "executionRoleArn": "arn:aws:iam::<<PLACEHOLDER>>:role/ecs_tasks_base_source_staging",
+    
+    "cpu": "512",
+    "memory": "1024",
+    
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "containerDefinitions": [
+        {
+            "name": "laravel",
+            "image": "<IMAGE1_NAME>",
+            "essential": true,
+            "command": ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "3000"],
+            "portMappings": [
+                {
+                    "protocol": "tcp",
+                    "containerPort": 3000,
+                    "hostPort": 3000
+                }
+            ],
+            "environment": [
+                { "name": "TZ", "value": "Asia/Tokyo" },
+                { "name": "APP_ENV", "value": "staging" },
+                { "name": "APP_DEBUG", "value": "false" },
+                { "name": "LOG_CHANNEL", "value": "stderr" },
+                { "name": "LOG_LEVEL", "value": "debug" },
+                { "name": "LOG_STDERR_FORMATTER", "value": "\\Monolog\\Formatter\\JsonFormatter" },
+                { "name": "DB_DATABASE", "value": "base_source_staging" },
+                { "name": "DB_USERNAME", "value": "base_source_staging" },
+                { "name": "DB_CONNECTION", "value": "pgsql" }
+            ],
+            "secrets": [
+                  {
+                    "name": "DB_HOST",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:<<PLACEHOLDER>>:parameter/base_source_staging/database_host"
+                  },
+                  {
+                    "name": "DB_PASSWORD",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:<<PLACEHOLDER>>:parameter/base_source_staging/database_password"
+                  },
+                  {
+                    "name": "LARAVEL_ENV_ENCRYPTION_KEY",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:<<PLACEHOLDER>>:parameter/base_source_staging/master_key"
+                  },
+                  {
+                    "name":  "REDIS_HOST",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:<<PLACEHOLDER>>:parameter/base_source_staging/redis_address"
+                  },
+                  {
+                    "name": "GIT_TOKEN",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:<<PLACEHOLDER>>:parameter/base_source_staging/git_token"
+                  },
+                  {
+                    "name": "APP_KEY",
+                    "valueFrom": "arn:aws:ssm:ap-northeast-1:<<PLACEHOLDER>>:parameter/base_source_staging/app_key"
+                  }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "base_source_staging_ecs_web",
+                    "awslogs-region": "ap-northeast-1",
+                    "awslogs-stream-prefix": "laravel"
+                }
+            }
+        }
+    ]
+}
