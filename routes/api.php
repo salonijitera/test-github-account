@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\HealthCheckController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ShopController;
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\Auth\VerifyEmailRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 
 // Health Check Route
 Route::any('/health-check', [HealthCheckController::class, 'index'])->name('health-check');
+
+// User Registration Route
+Route::post('/users/register', [UserController::class, 'register'])
+    ->name('users.register')->middleware('guest');
 
 // Email Verification Route
 Route::post('/users/verify-email', [AuthController::class, 'verifyEmail'])
