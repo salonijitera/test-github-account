@@ -3,27 +3,34 @@
 
 namespace App\Services;
 
-use App\Models\Shop;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 class ShopService
 {
-    public function updateShop(int $id, string $name, string $address): Shop
+    public function updateShop(int $userId, string $shopName, string $shopDescription): User
     {
-        if (empty($name) || empty($address)) {
-            throw new ValidationException('Name and address cannot be empty.');
+        if (empty($shopName)) {
+            throw new ValidationException('Shop name is required.');
+        }
+        if (empty($shopDescription)) {
+            throw new ValidationException('Shop description is required.');
         }
 
-        $shop = Shop::findOrFail($id);
+        $user = User::with('shop')->findOrFail($userId);
 
-        $shop->name = $name;
-        $shop->address = $address;
+        if (!$user->shop) {
+            throw new ModelNotFoundException('User not found.');
+        }
 
-        if (!$shop->save()) {
+        $user->shop->name = $shopName;
+        $user->shop->description = $shopDescription;
+
+        if (!$user->shop->save()) {
             throw new \Exception('Failed to update shop information.');
         }
 
-        return $shop;
+        return $user->shop;
     }
 }
