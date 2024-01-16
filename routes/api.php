@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\HealthCheckController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Requests\Auth\VerifyEmailRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::any('/health-check', [HealthCheckController::class, 'index'])->name('health-check');
+Route::post('/users/verify-email', [AuthController::class, 'verifyEmail'])
+    ->name('users.verify-email');
